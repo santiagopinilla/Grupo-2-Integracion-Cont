@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        RUTA_PROYECTO = 'Grupo-2-Integracion-Cont'
+        COMPOSE_PROJECT_NAME = "grupo2-pipeline"
     }
 
     stages {
@@ -15,15 +15,15 @@ pipeline {
 
         stage('Clonar repositorio') {
             steps {
-                dir("${RUTA_PROYECTO}") {
-                    git 'https://github.com/santiagopinilla/Grupo-2-Integracion-Cont.git'
+                dir('Grupo-2-Integracion-Cont') {
+                    git url: 'https://github.com/santiagopinilla/Grupo-2-Integracion-Cont.git', branch: 'main'
                 }
             }
         }
 
         stage('Construir contenedores') {
             steps {
-                dir("${RUTA_PROYECTO}") {
+                dir('Grupo-2-Integracion-Cont') {
                     echo 'Construyendo contenedores backend y frontend...'
                     sh 'docker-compose build --no-cache'
                 }
@@ -32,7 +32,7 @@ pipeline {
 
         stage('Ejecutar pruebas') {
             steps {
-                dir("${RUTA_PROYECTO}") {
+                dir('Grupo-2-Integracion-Cont') {
                     echo 'Ejecutando pruebas automatizadas...'
                     sh 'docker-compose run --rm backend npm test || true'
                 }
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Verificar backend') {
             steps {
-                dir("${RUTA_PROYECTO}") {
+                dir('Grupo-2-Integracion-Cont') {
                     echo 'Listando archivos del contenedor backend...'
                     sh 'docker-compose run --rm backend ls -l /usr/src/app || true'
                 }
@@ -50,7 +50,7 @@ pipeline {
 
         stage('Verificar frontend') {
             steps {
-                dir("${RUTA_PROYECTO}") {
+                dir('Grupo-2-Integracion-Cont') {
                     echo 'Listando archivos del contenedor frontend...'
                     sh 'docker-compose run --rm frontend ls -l /usr/share/nginx/html || true'
                 }
@@ -59,11 +59,9 @@ pipeline {
 
         stage('Verificar conexión MongoDB') {
             steps {
-                dir("${RUTA_PROYECTO}") {
+                dir('Grupo-2-Integracion-Cont') {
                     echo 'Esperando conexión del backend a MongoDB...'
-                    sh 'docker-compose up -d'
-                    sh 'sleep 6'
-                    sh 'docker logs api || true'
+                    sh 'docker-compose up -d || true'
                 }
             }
         }
