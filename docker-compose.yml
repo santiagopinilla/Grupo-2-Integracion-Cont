@@ -21,8 +21,6 @@ services:
   mongo:
     image: mongo
     container_name: mongo_jenkins
-    ports:
-      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
 
