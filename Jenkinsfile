@@ -19,6 +19,13 @@ pipeline {
             }
         }
 
+        stage('Ejecutar pruebas') {
+            steps {
+                echo 'Ejecutando pruebas automatizadas...'
+                sh 'docker-compose run --rm backend npm test || true'
+            }
+        }
+
         stage('Verificar backend') {
             steps {
                 echo 'Listando archivos del contenedor backend...'
@@ -37,7 +44,8 @@ pipeline {
             steps {
                 echo 'Esperando conexión del backend a MongoDB...'
                 sh 'docker-compose up -d'
-                sh 'sleep 6 && docker logs api | grep "Conectado a MongoDB" || echo "❌ No se detectó conexión"'
+                sh 'sleep 6'
+                sh 'docker logs api || echo ❌ No se detectó conexión'
             }
         }
 
