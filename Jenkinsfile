@@ -33,6 +33,14 @@ pipeline {
             }
         }
 
+        stage('Verificar conexión MongoDB') {
+            steps {
+                echo 'Esperando conexión del backend a MongoDB...'
+                sh 'docker-compose up -d'
+                sh 'sleep 6 && docker logs api | grep "Conectado a MongoDB" || echo "❌ No se detectó conexión"'
+            }
+        }
+
         stage('Finalizar') {
             steps {
                 echo 'Pipeline del proyecto Grupo 2 ejecutado correctamente.'
